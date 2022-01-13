@@ -75,16 +75,18 @@ load data local infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/owid-covid
 into table World_covid
 fields terminated by ','
 */
-
+#View table content
 select *
 from world_covid
 WHERE length(continent) > 0; 
 
+#View covid death by country
 select Location, date, total_cases, new_cases, total_deaths, population
 from world_covid
 WHERE length(continent) > 0 
 order by 1,2;
 
+#Table showing percentage of COVID deaths by country in ascending order
 select Distinct Location, min(date), max(date),
 count(total_cases) as total_cases_countries, 
 count(new_cases) as total_new_cases,
@@ -107,18 +109,21 @@ from world_covid
 WHERE length(continent) > 0 
 Order by 1,2;
 
+#Table showing percentage of COVID deaths in Nigeria in ascending order
 select location, date, total_cases, total_deaths,
 (total_deaths/total_cases)*100 as DeathPercentage
 from world_covid
 where location like '%Nigeria%'
 Order by 1,2;
 
+#Table showing percentage of COVID deaths in Italy in ascending order
 select location, date, total_cases, total_deaths,
 (total_deaths/total_cases)*100 as DeathPercentage
 from world_covid
 where location like '%Italy%'
 Order by 1,2;
 
+#Table showing percentage of COVID deaths in the UK in ascending order
 select location, date, total_cases, total_deaths,
 (total_deaths/total_cases)*100 as DeathPercentage
 from world_covid
@@ -131,6 +136,7 @@ from world_covid
 where location like '%Kingdom%'
 Order by 1,2;
 
+#Table showing percentage of population infected in the UK in ascending order
 select location, date, total_cases, population,
 (total_cases/population)*100 as Percentagepolulationinfected
 from world_covid
@@ -154,7 +160,7 @@ WHERE length(continent) > 0
 Group by 1
 Order by TotalDeathCount desc;
 
-#Death by continents
+#Total Death by continents
 select continent,
 max((total_deaths)) as TotalDeathCount
 from world_covid
@@ -191,6 +197,7 @@ WHERE length(continent) > 0
 group by 1
 order by 1,2;
 
+#Percentage of deaths across 2020 by country
 select date, sum(new_cases) as case_sum, sum(new_deaths) as death_sum,
 sum(new_deaths)/sum(new_cases)*100 as DeathPercentage
 from world_covid
@@ -217,4 +224,3 @@ sum(new_deaths)/sum(new_cases)*100 as DeathPercentage
 from world_covid
 WHERE length(continent) > 0 
 order by 1,2;
-
