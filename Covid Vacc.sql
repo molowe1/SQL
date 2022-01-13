@@ -75,17 +75,21 @@ load data local infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/owid-covid
 into table World_covid
 fields terminated by ','
 */
+
+#Join Covid death table with Covid vaccination table
 select *
 from world_covid
 join world_covid_vacc
 on world_covid.location=world_covid_vacc.location
 and world_covid.date = world_covid_vacc.date;
 
+
 select continent, location, date, population, new_vaccinations
 from world_covid_vacc
 WHERE length(continent) > 0 
 order by 2,3;
 
+#List of countries with no information on covid vaccination
 select continent, location, date, population, new_vaccinations
 from world_covid_vacc
 WHERE length(continent) > 0 
@@ -96,15 +100,17 @@ order by 2,3;
 select continent, location, date, population, new_vaccinations
 from world_covid_vacc
 WHERE length(continent) > 0 
-AND new_vaccinations > 0
-order by 2,3;
-
-select continent, location, date, population, new_vaccinations
-from world_covid_vacc
-WHERE length(continent) > 0 
 and new_vaccinations = 0 
 order by 2,3;
 
+#List of countries that have been vaccination during 2020
+select continent, location, date, population, new_vaccinations
+from world_covid_vacc
+WHERE length(continent) > 0 
+AND new_vaccinations > 0
+order by 2,3;
+
+#List of countries that werent vaccination during 2020
 select continent, location, date, population, new_vaccinations,
 sum(new_vaccinations) over (partition by  location) as Vacc_location
 from world_covid_vacc
@@ -112,6 +118,7 @@ WHERE length(continent) > 0
 and new_vaccinations = 0 
 order by 2,3;
 
+#List of countries that have been vaccination during 2021
 select continent, location, date, population, new_vaccinations,
 sum(new_vaccinations) over (partition by location) as Vacc_location
 from world_covid_vacc
@@ -120,6 +127,7 @@ and new_vaccinations = 0
 group by continent
 order by 2,3;
 
+#Average vaccination of population across year
 With PopvsVac (Continent, Location, Date, Population, new_vaccination, RollingPeopleVaccinated) 
 as
 (
@@ -145,6 +153,7 @@ WHERE length(continent) > 0
 Select *
 from PopvsVac;
 
+#Moving average of vaccination percentage of population across year
 With PopvsVac (Continent, Location, Date, Population, new_vaccination, RollingPeopleVaccinated) 
 as
 (
@@ -157,7 +166,6 @@ Select *, (RollingPeopleVaccinated/Population)*100 as VaccinationacrossYear
 from PopvsVac;
 
 #Temp table
-
 Drop table if exists $PercentPopulationVaccinated;
 create table $PercentPopulationVaccinated
 (
